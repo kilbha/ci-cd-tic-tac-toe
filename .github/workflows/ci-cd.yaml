@@ -109,7 +109,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
       
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@master
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: go-web-app
