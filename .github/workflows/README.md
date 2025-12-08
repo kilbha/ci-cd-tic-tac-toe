@@ -46,3 +46,17 @@ kubectl apply -f kubernetes/deployment.yaml
 ```
 
 Or set up a webhook to trigger the deployment when the manifest is updated.
+
+
+## IAM ROLE POLICY ATTACHING COMMANDs
+
+```bash
+aws iam create-role \
+  --role-name my-github-actions-role \
+  --assume-role-policy-document file://trust-policy.json
+```
+```bash
+aws iam attach-role-policy \
+  --role-name my-github-actions-role \
+  --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/GitHubActionsECRPolicy
+```
