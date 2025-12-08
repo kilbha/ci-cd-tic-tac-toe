@@ -48,7 +48,14 @@ kubectl apply -f kubernetes/deployment.yaml
 Or set up a webhook to trigger the deployment when the manifest is updated.
 
 
-## IAM ROLE POLICY ATTACHING COMMANDs
+## IAM ROLE POLICY ATTACHING COMMANDs & OIDC COMMAND
+
+```bash
+aws iam create-open-id-connect-provider \
+  --url https://token.actions.githubusercontent.com \
+  --client-id-list sts.amazonaws.com \
+  --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1
+```
 
 ```bash
 aws iam create-role \
