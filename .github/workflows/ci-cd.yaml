@@ -115,7 +115,7 @@ jobs:
           REPOSITORY: go-web-app
           IMAGE_TAG: ${{ github.sha }}
         with:
-          image-ref: $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          image-ref: ${{env.REGISTRY}}/${{env.REPOSITORY}}:${{env.IMAGE_TAG}}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
