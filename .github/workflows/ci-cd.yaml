@@ -143,8 +143,8 @@ jobs:
       
       - name: Setup Git config
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@gmail.com"
       
       - name: Update Kubernetes deployment file
         env:
@@ -165,5 +165,5 @@ jobs:
       - name: Commit and push changes
         run: |
           git add kubernetes/deployment.yaml
-          git commit -m "Update Kubernetes deployment with new image tag. [skip ci]" || echo "No changes to commit"
+          git commit -m "Update Kubernetes deployment with new image tag ${IMAGE_TAG}. [skip ci]" || echo "No changes to commit"
           git push
