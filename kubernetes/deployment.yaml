@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: tic-tac-toe
-        image: 045555583762.dkr.ecr.ap-south-2.amazonaws.com/go-web-app:c3ca97a4668fb9450359916294f4119dcdea056f
+        image: 045555583762.dkr.ecr.ap-south-2.amazonaws.com/go-web-app:c3e5e25e26a55ac5b8e466f49f695954eec24d84
         ports:
           - containerPort: 80
       imagePullSecrets:
