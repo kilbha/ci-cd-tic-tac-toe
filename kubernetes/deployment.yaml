@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tic-tac-toe
+  labels:
+    app: tic-tac-toe
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tic-tac-toe
+  template:
+    metadata:
+      labels:
+        app: tic-tac-toe
+    spec:
+      containers:
+      - name: tic-tac-toe
+        image: 045555583762.dkr.ecr.ap-south-2.amazonaws.com/go-web-app:c3ca97a4668fb9450359916294f4119dcdea056f
+        ports:
+          - containerPort: 80
+      imagePullSecrets:
+      - name: ecr-regcred
