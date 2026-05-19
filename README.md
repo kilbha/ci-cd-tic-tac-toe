@@ -88,3 +88,125 @@ yarn build
 
 The build artifacts will be stored in the `dist/` directory.
 
+
+
+Add the following sections to your README.md after the **Building for Production** section.
+
+# GitHub Actions OIDC Authentication with AWS
+
+This project uses GitHub Actions OIDC authentication to securely access AWS resources without storing long-term AWS access keys in GitHub Secrets.
+
+## Create OIDC Provider
+
+```bash
+aws iam create-open-id-connect-provider \
+  --url https://token.actions.githubusercontent.com \
+  --client-id-list sts.amazonaws.com \
+  --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1
+```
+
+---
+
+## Create IAM Role for GitHub Actions
+
+Create the IAM role using the trust policy file:
+
+```bash
+aws iam create-role \
+  --role-name my-github-actions-role \
+  --assume-role-policy-document file://trust-policy.json
+```
+
+---
+
+## Attach IAM Policy to Role
+
+`GitHubActionsECRPolicy.json` is available in the project root directory.
+
+Create the policy:
+
+```bash
+aws iam create-policy \
+  --policy-name GitHubActionsECRPolicy \
+  --policy-document file://GitHubActionsECRPolicy.json
+```
+
+Attach the policy to the IAM role:
+
+```bash
+aws iam attach-role-policy \
+  --role-name my-github-actions-role \
+  --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/GitHubActionsECRPolicy
+```
+
+---
+
+# GitHub Actions Secrets
+
+Add the following GitHub repository secrets:
+
+| Secret Name      | Description                     |
+| ---------------- | ------------------------------- |
+| AWS_REGION       | AWS Region                      |
+| AWS_ACCOUNT_ID   | AWS Account ID                  |
+| ECR_REPOSITORY   | ECR Repository Name             |
+| EKS_CLUSTER_NAME | EKS Cluster Name                |
+| AWS_ROLE_ARN     | IAM Role ARN for GitHub Actions |
+
+---
+
+# GitHub Actions Workflow Configuration
+
+Update your GitHub Actions workflow to use OIDC authentication and assume the IAM role.
+
+Example:
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+- name: Configure AWS Credentials
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+    aws-region: ${{ secrets.AWS_REGION }}
+```
+
+Replace hardcoded AWS Account IDs and IAM role ARNs with GitHub Secrets wherever required.
+
+---
+
+# Kubernetes Secret for Pulling Images from Amazon ECR
+
+Create a Kubernetes Docker registry secret to allow Kubernetes to pull private images from ECR.
+
+```bash
+kubectl create secret docker-registry ecr-regcred \
+  --docker-server=045555583762.dkr.ecr.ap-south-2.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password="$(aws ecr get-login-password --region ap-south-2)" \
+  --docker-email=fake@example.com
+```
+
+Verify the secret:
+
+```bash
+kubectl get secret ecr-regcred
+```
+
+---
+
+# Use Image Pull Secret in Deployment
+
+Add the following section inside your Kubernetes Deployment manifest:
+
+```yaml
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: ecr-regcred
+```
+
+This allows Kubernetes pods to authenticate with Amazon ECR and pull private container images securely.
