@@ -92,7 +92,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::045555583762:role/my-github-actions-role
+          role-to-assume: arn:aws:iam::015564824262:role/my-github-actions-role
           aws-region: ap-south-2
       
       - name: Login to Amazon ECR
@@ -102,7 +102,7 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: go-web-app
+          REPOSITORY: tic-tac-toe
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -112,7 +112,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: go-web-app
+          REPOSITORY: tic-tac-toe
           IMAGE_TAG: ${{ github.sha }}
         with:
           image-ref: ${{env.REGISTRY}}/${{env.REPOSITORY}}:${{env.IMAGE_TAG}}
@@ -134,7 +134,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::045555583762:role/my-github-actions-role
+          role-to-assume: arn:aws:iam::015564824262:role/my-github-actions-role
           aws-region: ap-south-2
       
       - name: Login to Amazon ECR
@@ -149,7 +149,7 @@ jobs:
       - name: Update Kubernetes deployment file
         env:
           IMAGE_TAG: ${{ github.sha }}
-          REPOSITORY: go-web-app
+          REPOSITORY: tic-tac-toe
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           # Define the new image with tag
