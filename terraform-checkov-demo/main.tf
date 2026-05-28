@@ -1,12 +1,11 @@
-resource "aws_s3_bucket" "secure_bucket" {
-  bucket = "my-secure-demo-bucket"
+provider "aws" {
+  region = "us-east-1"
 }
 
-resource "aws_s3_bucket_public_access_block" "secure_access" {
-  bucket                  = aws_s3_bucket.secure_bucket.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
 }
 
+resource "aws_s3_bucket" "test_bucket" {
+  bucket = "vault-demo-bucket-${random_id.bucket_suffix.hex}"
+}
