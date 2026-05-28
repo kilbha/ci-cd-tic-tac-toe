@@ -1,0 +1,5 @@
+[allowlist]
+description = "Allow GitHub Actions token placeholders"
+regexes = [
+    '''\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}'''
+]
